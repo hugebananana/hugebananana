@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>美图秀秀|jiba.my</title>
+    <style>
+        /* 基础样式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        /* 分类按钮样式 */
+        .filter-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            background: #fff;
+            border: 2px solid #333;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #333;
+            color: white;
+        }
+
+        /* 图片网格布局 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* 图片容器样式 */
+        .image-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        /* 悬停动画 */
+        .image-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* 分类标签 */
+        .category-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* 淡入动画 */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="filter-buttons">
+        <button class="filter-btn active" data-category="all">全部</button>
+		<button class="filter-btn" data-category="memes">表情包</button>
+        <button class="filter-btn" data-category="nature">自然</button>
+        <button class="filter-btn" data-category="animals">动物</button>
+        <button class="filter-btn" data-category="cities">城市</button>
+		
+    </div>
+
+    <div class="gallery" id="gallery"></div>
+
+    <script>
+        // 图片数据
+        const images = [
+            { category: 'nature', url: 'https://picsum.photos/300/200?nature1' },
+			{ category: 'nature', url: 'https://picsum.photos/300/200?nature3' },
+            { category: 'animals', url: 'https://picsum.photos/300/200?animals1' },
+            { category: 'cities', url: 'https://picsum.photos/300/200?cities1' },
+            { category: 'nature', url: 'https://picsum.photos/300/200?nature2' },
+            { category: 'animals', url: 'https://picsum.photos/300/200?animals2' },
+            { category: 'cities', url: 'https://picsum.photos/300/200?cities2' },
+			{ category: 'animals', url: 'https://picsum.photos/300/200?animals4' },
+			{ category: 'cities', url: 'https://picsum.photos/300/200?cities3' },
+			{ category: 'cities', url: 'https://picsum.photos/300/200?cities4' },
+			{ category: 'animals', url: 'https://picsum.photos/300/200?animals3' },
+			{ category: 'memes', url: 'https://jiba.my/memes/1.jpg' },
+			{ category: 'memes', url: 'https://jiba.my/memes/2.jpg' },
+			{ category: 'memes', url: 'https://jiba.my/memes/3.jpg' },
+			{ category: 'memes', url: 'https://jiba.my/memes/4.jpg' },
+			{ category: 'memes', url: 'https://jiba.my/memes/5.jpg' },
+			{ category: 'memes', url: 'https://jiba.my/memes/6.jpg' },
+        ];
+
+        // 初始化画廊
+        function initGallery() {
+            const gallery = document.getElementById('gallery');
+            images.forEach((img, index) => {
+                const item = document.createElement('div');
+                item.className = 'image-item';
+                item.dataset.category = img.category;
+                item.style.animationDelay = `${index * 0.1}s`;
+                
+                item.innerHTML = `
+                    <div class="category-tag">${img.category}</div>
+                    <img src="${img.url}" alt="${img.category}">
+                `;
+                gallery.appendChild(item);
+            });
+        }
+
+        // 过滤图片
+        function filterImages(category) {
+            const items = document.querySelectorAll('.image-item');
+            items.forEach(item => {
+                const show = category === 'all' || item.dataset.category === category;
+                item.style.display = show ? 'block' : 'none';
+            });
+        }
+
+        // 按钮点击事件
+        document.querySelector('.filter-buttons').addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                // 更新按钮状态
+                document.querySelectorAll('.filter-btn').forEach(btn => 
+                    btn.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                // 过滤图片
+                const category = e.target.dataset.category;
+                filterImages(category);
+            }
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initGallery();
+            filterImages('all');
+        });
+    </script>
+</body>
+</html>
